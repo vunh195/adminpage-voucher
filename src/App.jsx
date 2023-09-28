@@ -1,14 +1,15 @@
 import "./App.scss";
 import { Merchant } from "./modules/Merchant";
 import React from "react";
+import { Serial } from "./modules/Serial";
 
 function App() {
   const list = [
     "Merchant",
-    "Chain",
+    "Serial",
     "Category",
     "Discount",
-    "Sotre",
+    "Chain",
     "Warehouse",
   ];
   const [activetab, setActivetab] = React.useState(0);
@@ -30,6 +31,7 @@ function App() {
         })}
       </div>
       <div className="content">{activetab === 0 && <Merchant />}</div>
+      <div className="content">{activetab === 1 && <Serial />}</div>
     </div>
   );
 }
