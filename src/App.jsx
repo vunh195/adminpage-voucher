@@ -1,8 +1,23 @@
 import "./App.scss";
 import { Merchant } from "./modules/Merchant";
 import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Serial } from "./modules/Serial";
-
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <h1>ADMIN VOUCHER</h1>,
+    errorElement: <h1>aa</h1>,
+  },
+  {
+    path: "/merchant",
+    element: <Merchant />,
+  },
+  {
+    path: "/serial",
+    element: <Serial />,
+  },
+]);
 function App() {
   const list = [
     "Merchant",
@@ -25,13 +40,13 @@ function App() {
               key={key}
               onClick={() => setActivetab(key)}
             >
-              {item}
+              {/* <Link to={`/${item.toLowerCase()}`}>{item}</Link> */}
+              <a href={`/${item.toLowerCase()}`}>{item} </a>
             </div>
           );
         })}
       </div>
-      <div className="content">{activetab === 0 && <Merchant />}</div>
-      <div className="content">{activetab === 1 && <Serial />}</div>
+      <RouterProvider router={router}></RouterProvider>
     </div>
   );
 }
