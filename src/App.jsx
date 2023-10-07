@@ -2,7 +2,14 @@ import "./App.scss";
 import React from "react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 
-import { Category, Chain, Merchant, Serial, Warehouse } from "./modules";
+import {
+  Category,
+  Chain,
+  Discount,
+  Merchant,
+  Serial,
+  Warehouse,
+} from "./modules";
 const list = [
   "Merchant",
   "Serial",
@@ -46,6 +53,7 @@ function App() {
         <Route path="/chain" element={<Chain />}></Route>
         <Route path="/warehouse" element={<Warehouse />}></Route>
         <Route path="/category" element={<Category />}></Route>
+        <Route path="/discount" element={<Discount />}></Route>
       </Routes>
     </>
   );

@@ -505,6 +505,22 @@ export const Warehouse = () => {
               id=""
               placeholder="voucherChannel"
               onChange={(e) => setvoucherChannel(e.target.value)}
+            />{" "}
+            <input
+              disabled
+              type="text"
+              name=""
+              id=""
+              placeholder="availableFrom"
+              onChange={(e) => setavailableFrom(e.target.value)}
+            />{" "}
+            <input
+              disabled
+              type="text"
+              name=""
+              id=""
+              placeholder="availableTo"
+              onChange={(e) => setavailableTo(e.target.value)}
             />
             <label htmlFor="">Discount type </label>
             <select onChange={(e) => setdiscountTypeCode(e.target.value)}>
