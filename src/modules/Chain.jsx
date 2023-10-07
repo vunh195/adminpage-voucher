@@ -29,7 +29,6 @@ export const Chain = () => {
   const [desc, setDesc] = useState();
   const [merchantCode, setMerchantCode] = useState();
   const [status, setStatus] = useState();
-  const [merchantObj, setMerchantObj] = useState();
   const [merchantCodes, setMerchantCodes] = useState();
   const [objEdit, setObjEdit] = useState();
   const [objDelete, setObjDelete] = useState();
@@ -272,26 +271,27 @@ export const Chain = () => {
               }}
               defaultValue={objEdit?.description}
             />
+            <label htmlFor="">Merchant Codes</label>
+            <select
+              onChange={(e) => {
+                let obj = { ...objEdit };
+                obj.merchantCode = e.target.value;
+                setObjEdit(obj);
+              }}
+            >
+              {merchantCodes?.map((item) => {
+                return (
+                  <option
+                    value={item}
+                    selected={item === objEdit?.merchantCode ? true : false}
+                  >
+                    {item}
+                  </option>
+                );
+              })}
+            </select>
           </div>
-          <label htmlFor="">Merchant Codes</label>
-          <select
-            onChange={(e) => {
-              let obj = { ...objEdit };
-              obj.merchantCode = e.target.value;
-              setObjEdit(obj);
-            }}
-          >
-            {merchantCodes?.map((item) => {
-              return (
-                <option
-                  value={item}
-                  selected={item === objEdit?.merchantCode ? true : false}
-                >
-                  {item}
-                </option>
-              );
-            })}
-          </select>
+
           <div className="btn" onClick={() => handelEdit()}>
             Edit
           </div>

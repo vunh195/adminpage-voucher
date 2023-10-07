@@ -1,13 +1,13 @@
-export const getAllCategory = () => {
+export const getAlldiscount = () => {
   var requestOptions = {
     method: "GET",
   };
-  return fetch("http://localhost:8082/category", requestOptions)
+  return fetch("http://localhost:8082/discount", requestOptions)
     .then((response) => response.json())
     .then((result) => result.data)
     .catch((error) => console.log("error", error));
 };
-export const addcategory = (obj) => {
+export const adddiscount = (obj) => {
   var requestOptions = {
     method: "POST",
     headers: {
@@ -15,13 +15,13 @@ export const addcategory = (obj) => {
     },
     body: JSON.stringify(obj),
   };
-  return fetch("http://localhost:8082/category/api/insert", requestOptions)
+  return fetch("http://localhost:8082/discount/api/insert", requestOptions)
     .then((response) => response.json())
     .then((result) => result)
     .catch((error) => console.log("error", error));
 };
 
-export const editcategory = (obj) => {
+export const editdiscount = (obj) => {
   var requestOptions = {
     method: "PUT",
     headers: {
@@ -30,7 +30,7 @@ export const editcategory = (obj) => {
     body: JSON.stringify(obj),
   };
   return fetch(
-    `${process.env.REACT_APP_VOUCHER_API}/category/api/${obj?.id}`,
+    `${process.env.REACT_APP_VOUCHER_API}/discount/api/${obj?.id}`,
     requestOptions
   )
     .then((response) => response.json())
@@ -38,7 +38,7 @@ export const editcategory = (obj) => {
     .catch((error) => console.log("error", error));
 };
 
-export const deletecategory = (id, obj) => {
+export const deletediscount = (id, obj) => {
   var requestOptions = {
     method: "DELETE",
     headers: {
@@ -47,7 +47,7 @@ export const deletecategory = (id, obj) => {
     body: JSON.stringify(obj),
   };
   return fetch(
-    `${process.env.REACT_APP_VOUCHER_API}/category/api/${id}`,
+    `${process.env.REACT_APP_VOUCHER_API}/discount/api/${id}`,
     requestOptions
   )
     .then((response) => response.json())

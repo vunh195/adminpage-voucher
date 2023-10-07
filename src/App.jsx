@@ -1,18 +1,27 @@
 import "./App.scss";
 import React from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 
-import { Chain, Merchant, Serial } from "./modules";
+import { Category, Chain, Merchant, Serial, Warehouse } from "./modules";
 const list = [
   "Merchant",
   "Serial",
-  "Category",
-  "Discount",
   "Chain",
   "Warehouse",
+  "Category",
+  "Discount",
 ];
 function App() {
   const [activetab, setActivetab] = React.useState(0);
+  const location = useLocation();
+  React.useState(() => {
+    let tab = 0;
+    tab = list?.findIndex(
+      (item) => location.pathname.replace("/", "") === item.toLowerCase()
+    );
+    setActivetab(tab);
+  }, []);
+
   return (
     <>
       <div className="nav">
@@ -35,6 +44,8 @@ function App() {
         <Route path="/merchant" element={<Merchant />}></Route>
         <Route path="/serial" element={<Serial />}></Route>
         <Route path="/chain" element={<Chain />}></Route>
+        <Route path="/warehouse" element={<Warehouse />}></Route>
+        <Route path="/category" element={<Category />}></Route>
       </Routes>
     </>
   );
