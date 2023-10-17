@@ -29,19 +29,17 @@ export const Merchant = () => {
   const [desc, setDesc] = useState("");
   const [status, setStatus] = useState();
   const [objEdit, setObjEdit] = useState();
+  const [objDelete, setObjDelete] = useState();
   console.log(objEdit?.description);
   const handelEdit = async () => {
     if (!objEdit) {
       return alert("Please select item");
     }
     const rs = await editMerchant(objEdit);
-    if (rs?.status === "Success") {
+    if (rs?.statusCode === 200) {
       alert(rs?.message);
       const newlist = await getAllMerchant();
       return setList(newlist);
-    }
-    if (rs?.status === "Failed") {
-      alert("Edit Failed");
     }
   };
   const handelAdd = async () => {
@@ -71,26 +69,26 @@ export const Merchant = () => {
       status: status,
     };
     const rs = await addMerchant(obj);
-    if (rs?.status === "Success") {
+    if (rs?.statusCode === 200) {
+      alert(rs?.message);
       const newlist = await getAllMerchant();
       return setList(newlist);
     }
-    if (rs?.status === "Failed") {
-      return alert(rs?.message);
+    if(rs?.statusCode === 400){
+        return alert(rs?.message);
     }
   };
-  const handelDelelet = () => {
+  const handelDelelet = async () => {
     if (!idDelete) {
       alert("Please enter valid ID");
       return;
     }
-    deleteMerchant(idDelete).then((rs) => {
-      if (rs?.status === "Success") {
+    const rs = await deleteMerchant(idDelete, objDelete);
+      if (rs?.statusCode === 200) {
         alert(`Delete merchant ${idDelete} successfull`);
-        // const newlist = await getAllMerchant();
-        // return setList(newlist);
+        const newlist = await getAllMerchant();
+        return setList(newlist);
       }
-    });
   };
 
   React.useEffect(() => {
@@ -126,6 +124,7 @@ export const Merchant = () => {
                   onClick={() => {
                     setObjEdit(item);
                     setIdDelelet(item?.id);
+                    setObjDelete(item);
                   }}
                 >
                   <div className="a id">{item?.id}</div>

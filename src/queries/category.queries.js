@@ -2,7 +2,7 @@ export const getAllCategory = () => {
   var requestOptions = {
     method: "GET",
   };
-  return fetch("http://localhost:8082/category", requestOptions)
+  return fetch(`${process.env.REACT_APP_VOUCHER_API}/category`, requestOptions)
     .then((response) => response.json())
     .then((result) => result.data)
     .catch((error) => console.log("error", error));
@@ -15,7 +15,7 @@ export const addcategory = (obj) => {
     },
     body: JSON.stringify(obj),
   };
-  return fetch("http://localhost:8082/category/api/insert", requestOptions)
+  return fetch(`${process.env.REACT_APP_VOUCHER_API}/category/api/insert`, requestOptions)
     .then((response) => response.json())
     .then((result) => result)
     .catch((error) => console.log("error", error));

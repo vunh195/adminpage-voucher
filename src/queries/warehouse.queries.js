@@ -2,7 +2,7 @@ export const getAllWarehouse = () => {
   var requestOptions = {
     method: "GET",
   };
-  return fetch("http://localhost:8082/warehouse", requestOptions)
+  return fetch(`${process.env.REACT_APP_VOUCHER_API}/warehouse`, requestOptions)
     .then((response) => response.json())
     .then((result) => result.data)
     .catch((error) => console.log("error", error));
@@ -15,7 +15,7 @@ export const addWarehouse = (obj) => {
     },
     body: JSON.stringify(obj),
   };
-  return fetch("http://localhost:8082/warehouse/api/insert", requestOptions)
+  return fetch(`${process.env.REACT_APP_VOUCHER_API}/warehouse/api/insert`, requestOptions)
     .then((response) => response.json())
     .then((result) => result)
     .catch((error) => console.log("error", error));

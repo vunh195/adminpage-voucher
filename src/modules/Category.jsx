@@ -31,8 +31,8 @@ export const Category = () => {
       return alert("Please select item");
     }
     const rs = await editcategory(objEdit);
-    if (rs?.status === "Success") {
-      // alert(rs?.message);
+    if (rs?.statusCode === 200) {
+      alert(rs?.message);
       const newspaperSpinning = [
         {
           backgroundColor: "white",
@@ -49,8 +49,8 @@ export const Category = () => {
       const newlist = await getAllCategory();
       return setList(newlist);
     }
-    if (rs?.status === "Failed") {
-      alert("Edit Failed");
+    if (rs?.status === 404) {
+      alert(rs?.message);
     }
   };
   const handelAdd = async () => {
@@ -65,11 +65,12 @@ export const Category = () => {
       bannerUrl: bannerUrl,
     };
     const rs = await addcategory(obj);
-    if (rs?.status === "Success") {
+    if (rs?.statusCode === 200) {
+      alert(rs?.message);
       const newlist = await getAllCategory();
       return setList(newlist);
     }
-    if (rs?.status === "Failed") {
+    if (rs?.statusCode === 404) {
       return alert(rs?.message);
     }
   };
@@ -79,12 +80,10 @@ export const Category = () => {
       return;
     }
     const rs = await deletecategory(idDelete, objDelete);
-    if (rs?.status === "Success") {
+    if (rs?.statusCode === 200) {
       alert(`Delete merchant ${idDelete} successfull`);
       const newlist = await getAllCategory();
       return setList(newlist);
-    } else {
-      alert(rs?.message);
     }
   };
 
