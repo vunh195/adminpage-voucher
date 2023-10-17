@@ -6,6 +6,16 @@ import {
   editMerchant,
   getAllMerchant,
 } from "../queries/merchant.queries";
+const statusHard = [
+  {
+    label: "Active",
+    value: 1,
+  },
+  {
+    label: "Deactive",
+    value: 0,
+  },
+];
 export const Merchant = () => {
   const [idDelete, setIdDelelet] = useState();
   const [list, setList] = React.useState();
@@ -17,6 +27,7 @@ export const Merchant = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [desc, setDesc] = useState("");
+  const [status, setStatus] = useState();
   const [objEdit, setObjEdit] = useState();
   console.log(objEdit?.description);
   const handelEdit = async () => {
@@ -42,7 +53,8 @@ export const Merchant = () => {
       !address ||
       !phone ||
       !email ||
-      !desc
+      !desc ||
+      !status
     ) {
       alert("Please enter enough value");
       return;
@@ -56,6 +68,7 @@ export const Merchant = () => {
       phone: phone,
       email: email,
       description: desc,
+      status: status,
     };
     const rs = await addMerchant(obj);
     if (rs?.status === "Success") {
@@ -96,6 +109,7 @@ export const Merchant = () => {
           <div className="a id">ID</div>
           <div className="a">merchantCode</div>
           <div className="a">name</div>
+          <div className="a">status</div>
           <div className="a">legalName</div>
           <div className="a">logoUrl</div>
           <div className="a">address</div>
@@ -116,6 +130,11 @@ export const Merchant = () => {
                 >
                   <div className="a id">{item?.id}</div>
                   <div className="a">{item?.merchantCode}</div>
+                  <div
+                    className={item?.status === 0 ? "a deactive" : "a active"}
+                  >
+                    {item?.status === 0 ? "Deactive" : "Active"}
+                  </div>
                   <div className="a">{item?.name}</div>
                   <div className="a">{item?.legalName}</div>
                   <div className="a">{item?.logoUrl}</div>
@@ -138,6 +157,20 @@ export const Merchant = () => {
               placeholder="merchantCode"
               onChange={(e) => setMerchantCode(e.target.value)}
             />
+            <div onChange={(e) => setStatus(e.target.value)}>
+              {statusHard?.map((item) => {
+                return (
+                  <label>
+                    <input
+                      checked={Number(status) === Number(item.value)}
+                      type="radio"
+                      value={item.value}
+                    />
+                    {item?.label}
+                  </label>
+                );
+              })}
+            </div>
             <input
               type="text"
               name=""
@@ -207,6 +240,26 @@ export const Merchant = () => {
               }}
               defaultValue={objEdit?.merchantCode}
             />
+            <div
+              onChange={(e) => {
+                let obj = { ...objEdit };
+                obj.status = e.target.value;
+                setObjEdit(obj);
+              }}
+            >
+              {statusHard?.map((item) => {
+                return (
+                  <label>
+                    <input
+                      checked={Number(objEdit?.status) === Number(item.value)}
+                      type="radio"
+                      value={item.value}
+                    />
+                    {item?.label}
+                  </label>
+                );
+              })}
+            </div>
             <input
               type="text"
               name=""
