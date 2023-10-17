@@ -8,6 +8,8 @@ import {
 } from "../queries/warehouse.queries";
 import { getAlldiscount } from "../queries/discount.queries";
 import { getAllCategory } from "../queries/category.queries";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import moment from "moment";
 const statusHard = [
   {
     label: "Active",
@@ -31,9 +33,9 @@ const showOnWebHard = [
 export const Warehouse = () => {
   const [idDelete, setIdDelelet] = useState();
   const [list, setList] = React.useState();
-  const [warehouseCode, setwarehouseCode] = useState("");
+  const [warehouseCode, setwarehouseCode] = useState();
   const [termOfUse, settermOfUse] = useState();
-  const [bannerUrl, setbannerUrl] = useState("");
+  const [bannerUrl, setbannerUrl] = useState();
   const [thumbnailUrl, setthumbnailUrl] = useState();
   const [discountAmount, setdiscountAmount] = useState();
   const [maxDiscountAmount, setmaxDiscountAmount] = useState();
@@ -44,19 +46,25 @@ export const Warehouse = () => {
   const [categoryCode, setcategoryCode] = useState();
   const [description, setdescription] = useState();
   const [status, setStatus] = useState();
-  const [availableFrom, setavailableFrom] = useState("");
-  const [availableTo, setavailableTo] = useState("");
+  const [availableFrom, setavailableFrom] = useState(
+    moment(new Date()).format()
+  );
+  const [availableTo, setavailableTo] = useState(
+    moment(new Date().setDate(new Date().getDate() + 1)).format()
+  );
   const [name, setname] = useState();
   const [objEdit, setObjEdit] = useState();
   const [objDelete, setObjDelete] = useState();
   const [discountList, setDiscountList] = useState();
   const [categoryList, setcategoryList] = useState();
+  console.log("from", availableFrom);
+  console.log("to", availableTo);
   const handelEdit = async () => {
     if (!objEdit) {
       return alert("Please select item");
     }
     const rs = await editwarehouse(objEdit);
-    if (rs?.status === "Success") {
+    if (rs?.statusCode === 200) {
       // alert(rs?.message);
       const newspaperSpinning = [
         {
@@ -79,6 +87,27 @@ export const Warehouse = () => {
     }
   };
   const handelAdd = async () => {
+    if (
+      !warehouseCode ||
+      !name ||
+      !status ||
+      !termOfUse ||
+      !bannerUrl ||
+      !description ||
+      !thumbnailUrl ||
+      !discountAmount ||
+      !maxDiscountAmount ||
+      !availableFrom ||
+      !availableTo ||
+      !showOnWeb ||
+      !capacity ||
+      !voucherChannel ||
+      !discountTypeCode ||
+      !categoryCode
+    ) {
+      alert("Please enter enough value");
+      return;
+    }
     const obj = {
       warehouseCode: warehouseCode,
       name: name,
@@ -87,16 +116,17 @@ export const Warehouse = () => {
       bannerUrl: bannerUrl,
       description: description,
       thumbnailUrl: thumbnailUrl,
-      discountAmount: discountAmount,
-      maxDiscountAmount: maxDiscountAmount,
+      discountAmount: Number(discountAmount),
+      maxDiscountAmount: Number(maxDiscountAmount),
       availableFrom: availableFrom,
       availableTo: availableTo,
-      showOnWeb: showOnWeb,
-      capacity: capacity,
-      voucherChannel: voucherChannel,
+      showOnWeb: Number(showOnWeb),
+      capacity: Number(capacity),
+      voucherChannel: Number(voucherChannel),
       discountTypeCode: discountTypeCode,
       categoryCode: categoryCode,
     };
+
     const rs = await addWarehouse(obj);
     if (rs?.status === "Success") {
       const newlist = await getAllWarehouse();
@@ -134,8 +164,31 @@ export const Warehouse = () => {
     discountList && setdiscountTypeCode(discountList[0]);
     categoryList && setcategoryCode(categoryList[0]);
   }, [discountList, categoryList]);
-  console.log(list);
 
+  React.useEffect(() => {
+    if (moment(availableTo).isBefore(moment(availableFrom))) {
+      let d = moment(availableFrom).date();
+      setavailableTo(
+        moment(availableFrom)
+          .set("date", d + 1)
+          .format()
+      );
+    }
+  }, [availableFrom, availableTo]);
+  React.useEffect(() => {
+    if (
+      objEdit &&
+      moment(objEdit.availableTo).isBefore(moment(objEdit.availableFrom))
+    ) {
+      let d = moment(objEdit.availableFrom).date();
+      let ob = { ...objEdit };
+      ob.availableTo = moment(objEdit.availableFrom)
+        .set("date", d + 1)
+        .format();
+
+      setObjEdit(ob);
+    }
+  }, [objEdit]);
   return (
     <div className="wrapper">
       <div className="list">
@@ -198,8 +251,14 @@ export const Warehouse = () => {
                     >
                       {item?.showOnWeb === 0 ? "Not show" : "show"}
                     </div>
-                    <div className="a">{item?.availableFrom}</div>
-                    <div className="a">{item?.availableTo}</div>
+                    <div className="a">
+                      {moment(item?.availableFrom).format(
+                        "YYYY/DD/MM hh:mm:ss"
+                      )}
+                    </div>
+                    <div className="a">
+                      {moment(item?.availableTo).format("YYYY/DD/MM hh:mm:ss")}
+                    </div>
                   </div>
                 );
               })
@@ -276,6 +335,28 @@ export const Warehouse = () => {
                 );
               })}
             </div>
+            {objEdit && objEdit.availableFrom && (
+              <DateTimePicker
+                label="availableFrom"
+                value={moment(objEdit.availableFrom)}
+                onChange={(newValue) => {
+                  let ob = { ...objEdit };
+                  ob.availableFrom = newValue.format();
+                  setObjEdit(ob);
+                }}
+              />
+            )}
+            {objEdit && objEdit.availableTo && (
+              <DateTimePicker
+                label="availableTo"
+                value={moment(objEdit.availableTo)}
+                onChange={(newValue) => {
+                  let ob = { ...objEdit };
+                  ob.availableTo = newValue.format();
+                  setObjEdit(ob);
+                }}
+              />
+            )}
             <input
               type="text"
               name=""
@@ -506,21 +587,17 @@ export const Warehouse = () => {
               placeholder="voucherChannel"
               onChange={(e) => setvoucherChannel(e.target.value)}
             />{" "}
-            <input
-              disabled
-              type="text"
-              name=""
-              id=""
-              placeholder="availableFrom"
-              onChange={(e) => setavailableFrom(e.target.value)}
-            />{" "}
-            <input
-              disabled
-              type="text"
-              name=""
-              id=""
-              placeholder="availableTo"
-              onChange={(e) => setavailableTo(e.target.value)}
+            <DateTimePicker
+              label="availableFrom"
+              value={moment(availableFrom)}
+              onChange={(newValue) => setavailableFrom(newValue.format())}
+            />
+            <DateTimePicker
+              label="availableTo"
+              value={moment(availableTo)}
+              onChange={(newValue) => {
+                setavailableTo(newValue.format());
+              }}
             />
             <label htmlFor="">Discount type </label>
             <select onChange={(e) => setdiscountTypeCode(e.target.value)}>
