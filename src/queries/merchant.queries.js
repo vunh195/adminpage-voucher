@@ -43,10 +43,13 @@ export const editMerchant = (obj) => {
     .catch((error) => console.log("error", error));
 };
 
-export const deleteMerchant = (id) => {
+export const deleteMerchant = (id, obj) => {
   var requestOptions = {
     method: "DELETE",
-    redirect: "follow",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(obj),
   };
   return fetch(
     `${process.env.REACT_APP_VOUCHER_API}/merchant/api/${id}`,

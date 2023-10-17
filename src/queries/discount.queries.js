@@ -2,7 +2,7 @@ export const getAlldiscount = () => {
   var requestOptions = {
     method: "GET",
   };
-  return fetch("http://localhost:8082/discount", requestOptions)
+  return fetch(`${process.env.REACT_APP_VOUCHER_API}/discount`, requestOptions)
     .then((response) => response.json())
     .then((result) => result.data)
     .catch((error) => console.log("error", error));
@@ -15,7 +15,7 @@ export const adddiscount = (obj) => {
     },
     body: JSON.stringify(obj),
   };
-  return fetch("http://localhost:8082/discount/api/insert", requestOptions)
+  return fetch(`${process.env.REACT_APP_VOUCHER_API}/discount/api/insert`, requestOptions)
     .then((response) => response.json())
     .then((result) => result)
     .catch((error) => console.log("error", error));

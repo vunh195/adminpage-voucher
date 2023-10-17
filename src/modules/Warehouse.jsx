@@ -65,7 +65,7 @@ export const Warehouse = () => {
     }
     const rs = await editwarehouse(objEdit);
     if (rs?.statusCode === 200) {
-      // alert(rs?.message);
+      alert(rs?.message);
       const newspaperSpinning = [
         {
           backgroundColor: "white",
@@ -82,8 +82,8 @@ export const Warehouse = () => {
       const newlist = await getAllWarehouse();
       return setList(newlist);
     }
-    if (rs?.status === "Failed") {
-      alert("Edit Failed");
+    if (rs?.statusCode === 404) {
+      alert(rs?.message);
     }
   };
   const handelAdd = async () => {
@@ -128,11 +128,12 @@ export const Warehouse = () => {
     };
 
     const rs = await addWarehouse(obj);
-    if (rs?.status === "Success") {
+    if (rs?.statusCode === 200) {
+      alert(rs?.message);
       const newlist = await getAllWarehouse();
       return setList(newlist);
     }
-    if (rs?.status === "Failed") {
+    if (rs?.statusCode === 400) {
       return alert(rs?.message);
     }
   };
@@ -142,7 +143,7 @@ export const Warehouse = () => {
       return;
     }
     const rs = await deletewarehouse(idDelete, objDelete);
-    if (rs?.status === "Success") {
+    if (rs?.statusCode === 200) {
       alert(`Delete  ${idDelete} successfull`);
       const newlist = await getAllWarehouse();
       return setList(newlist);

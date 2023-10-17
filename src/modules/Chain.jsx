@@ -38,8 +38,8 @@ export const Chain = () => {
       return alert("Please select item");
     }
     const rs = await editChain(objEdit);
-    if (rs?.status === "SUCCESS") {
-      // alert(rs?.message);
+    if (rs?.statusCode === 200) {
+      alert(rs?.message);
       const newspaperSpinning = [
         {
           backgroundColor: "white",
@@ -56,8 +56,8 @@ export const Chain = () => {
       const newlist = await getAllChain();
       return setList(newlist);
     }
-    if (rs?.status === "Failed") {
-      alert("Edit Failed");
+    if (rs?.statusCode === 404) {
+      return alert(rs?.message);
     }
   };
   const handelAdd = async () => {
@@ -77,11 +77,12 @@ export const Chain = () => {
       phone: phone,
     };
     const rs = await addChain(obj);
-    if (rs?.status === "Success") {
+    if (rs?.er === 200) {
+      alert(rs?.message);
       const newlist = await getAllChain();
       return setList(newlist);
     }
-    if (rs?.status === "Failed") {
+    if (rs?.statusCode === 400) {
       return alert(rs?.message);
     }
   };
@@ -91,7 +92,7 @@ export const Chain = () => {
       return;
     }
     const rs = await deleteChain(idDelete, objDelete);
-    if (rs?.status === "Success") {
+    if (rs?.statusCode === 200) {
       alert(`Delete  ${idDelete} successfull`);
       const newlist = await getAllChain();
       return setList(newlist);
@@ -360,7 +361,7 @@ export const Chain = () => {
               type="text"
               name=""
               id=""
-              placeholder="desc"
+              placeholder="description"
               onChange={(e) => setDesc(e.target.value)}
             />
             <label htmlFor="">Merchant Codes</label>
