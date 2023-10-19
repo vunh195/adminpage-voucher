@@ -48,9 +48,8 @@ export const Category = () => {
       ele.animate(newspaperSpinning, newspaperTiming);
       const newlist = await getAllCategory();
       return setList(newlist);
-    }
-    if (rs?.status === 404) {
-      alert(rs?.message);
+    }else if (rs?.status === 404) {
+      return alert(rs?.message);
     }
   };
   const handelAdd = async () => {
@@ -69,10 +68,9 @@ export const Category = () => {
       alert(rs?.message);
       const newlist = await getAllCategory();
       return setList(newlist);
-    }
-    if (rs?.statusCode === 404) {
+    }else if (rs?.statusCode === 400) {
       return alert(rs?.message);
-    }
+    } 
   };
   const handelDelelet = async () => {
     if (!idDelete) {
@@ -84,6 +82,8 @@ export const Category = () => {
       alert(`Delete merchant ${idDelete} successfull`);
       const newlist = await getAllCategory();
       return setList(newlist);
+    }if (rs?.statusCode === 404) {
+      return alert(rs?.message);
     }
   };
 

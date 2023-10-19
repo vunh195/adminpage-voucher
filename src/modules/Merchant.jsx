@@ -40,6 +40,8 @@ export const Merchant = () => {
       alert(rs?.message);
       const newlist = await getAllMerchant();
       return setList(newlist);
+    }else if (rs?.statusCode === 404) {
+      return alert(rs?.message);
     }
   };
   const handelAdd = async () => {
@@ -73,9 +75,10 @@ export const Merchant = () => {
       alert(rs?.message);
       const newlist = await getAllMerchant();
       return setList(newlist);
-    }
-    if(rs?.statusCode === 400){
-        return alert(rs?.message);
+    }else if (rs?.statusCode === 400) {
+      return alert(rs?.message);
+    }else if (rs?.statusCode === 406) {
+      return alert(rs?.message);
     }
   };
   const handelDelelet = async () => {
@@ -88,6 +91,8 @@ export const Merchant = () => {
         alert(`Delete merchant ${idDelete} successfull`);
         const newlist = await getAllMerchant();
         return setList(newlist);
+      }else if (rs?.statusCode === 404) {
+        return alert(rs?.message);
       }
   };
 
