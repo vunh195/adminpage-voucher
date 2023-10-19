@@ -48,9 +48,10 @@ export const Discount = () => {
       ele.animate(newspaperSpinning, newspaperTiming);
       const newlist = await getAlldiscount();
       return setList(newlist);
-    }
-    if (rs?.statusCode === 404) {
-      alert(rs?.message);
+    }else if (rs?.statusCode === 404) {
+      return alert(rs?.message);
+    }else if (rs?.statusCode === 406) {
+      return alert(rs?.message);
     }
   };
   const handelAdd = async () => {
@@ -68,8 +69,9 @@ export const Discount = () => {
       alert(rs?.message);
       const newlist = await getAlldiscount();
       return setList(newlist);
-    }
-    if (rs?.statusCode === 400) {
+    }else if (rs?.statusCode === 400) {
+      return alert(rs?.message);
+    }else if (rs?.statusCode === 406) {
       return alert(rs?.message);
     }
   };
@@ -83,6 +85,8 @@ export const Discount = () => {
       alert(`Delete merchant ${idDelete} successfull`);
       const newlist = await getAlldiscount();
       return setList(newlist);
+    }else if (rs?.statusCode === 404) {
+      return alert(rs?.message);
     }
   };
 

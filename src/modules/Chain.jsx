@@ -55,8 +55,9 @@ export const Chain = () => {
       ele.animate(newspaperSpinning, newspaperTiming);
       const newlist = await getAllChain();
       return setList(newlist);
-    }
-    if (rs?.statusCode === 404) {
+    }else if (rs?.statusCode === 404) {
+      return alert(rs?.message);
+    }else if (rs?.statusCode === 406) {
       return alert(rs?.message);
     }
   };
@@ -81,8 +82,9 @@ export const Chain = () => {
       alert(rs?.message);
       const newlist = await getAllChain();
       return setList(newlist);
-    }
-    if (rs?.statusCode === 400) {
+    } else if (rs?.statusCode === 400) {
+      return alert(rs?.message);
+    } else if (rs?.statusCode === 406) {
       return alert(rs?.message);
     }
   };
@@ -96,6 +98,8 @@ export const Chain = () => {
       alert(`Delete  ${idDelete} successfull`);
       const newlist = await getAllChain();
       return setList(newlist);
+    }else if (rs?.statusCode === 404) {
+      return alert(rs?.message);
     }
   };
 
