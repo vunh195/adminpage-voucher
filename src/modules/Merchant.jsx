@@ -6,6 +6,7 @@ import {
   editMerchant,
   getAllMerchant,
 } from "../queries/merchant.queries";
+import { toast } from "react-toastify";
 const statusHard = [
   {
     label: "Active",
@@ -37,8 +38,6 @@ export const Merchant = () => {
     const rs = await editMerchant(objEdit);
     if (rs?.status === "Success") {
       alert(rs?.message);
-      const newlist = await getAllMerchant();
-      return setList(newlist);
     }
     if (rs?.status === "Failed") {
       alert("Edit Failed");
@@ -72,8 +71,6 @@ export const Merchant = () => {
     };
     const rs = await addMerchant(obj);
     if (rs?.status === "Success") {
-      const newlist = await getAllMerchant();
-      return setList(newlist);
     }
     if (rs?.status === "Failed") {
       return alert(rs?.message);
@@ -94,13 +91,10 @@ export const Merchant = () => {
   };
 
   React.useEffect(() => {
-    getAllMerchant().then((rs) => setList(rs));
-    // const fn = async () => {
-    //   const rs = await getAllChain();
-    //   setList(rs);
-    // };
-    // fn();
-  }, []);
+    getAllMerchant()
+      .then((rs) => setList(rs))
+      .catch((err) => toast.error(err.response.data.error));
+  });
   return (
     <div className="wrapper">
       <div className="list">

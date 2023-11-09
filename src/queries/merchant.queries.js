@@ -1,12 +1,7 @@
+import http from "../configs/http";
+
 export const getAllMerchant = () => {
-  var requestOptions = {
-    method: "GET",
-    redirect: "follow",
-  };
-  return fetch(`${process.env.REACT_APP_VOUCHER_API}/merchant`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => result.data)
-    .catch((error) => console.log("error", error));
+  return http.get(`/merchant`);
 };
 
 export const addMerchant = (obj) => {

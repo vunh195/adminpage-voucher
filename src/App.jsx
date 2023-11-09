@@ -10,6 +10,13 @@ import {
   Serial,
   Warehouse,
 } from "./modules";
+import { schemaSignIn } from "./validate";
+import { signIn } from "./queries/auth.queries";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import { logIn, logOut, selectAccessToken } from "./redux/features/authSlice";
+import { yupResolver } from "@hookform/resolvers/yup";
 const list = [
   "Merchant",
   "Serial",
@@ -21,6 +28,25 @@ const list = [
 function App() {
   const [activetab, setActivetab] = React.useState(0);
   const location = useLocation();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schemaSignIn),
+  });
+  const dispatch = useDispatch();
+  const token = useSelector(selectAccessToken);
+  const onSubmitSignIn = async (data) => {
+    signIn(data)
+      .then((rs) => {
+        if (rs) {
+          toast.success(rs.message);
+          dispatch(logIn(rs.data));
+        }
+      })
+      .catch((err) => toast.error(err.response.data.message));
+  };
   React.useState(() => {
     let tab = 0;
     tab = list?.findIndex(
@@ -28,7 +54,6 @@ function App() {
     );
     setActivetab(tab);
   }, []);
-
   return (
     <>
       <div className="nav">
@@ -46,6 +71,25 @@ function App() {
             </Link>
           );
         })}
+        {token ? (
+          <div className="logout" onClick={() => dispatch(logOut())}>
+            Logout
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit(onSubmitSignIn)}>
+            <div>
+              <label>Email</label>
+              <input {...register("email")} />
+              {errors.email && <p>{errors.email.message.toString()}</p>}
+            </div>
+            <div>
+              <label>Password</label>
+              <input {...register("password")} type="password" />
+              {errors.password && <p>{errors.password.message.toString()}</p>}
+            </div>
+            <input type="submit" value="Đăng nhập" />
+          </form>
+        )}
       </div>
       <Routes>
         <Route path="/merchant" element={<Merchant />}></Route>

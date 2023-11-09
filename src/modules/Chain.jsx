@@ -7,6 +7,7 @@ import {
   getAllChain,
 } from "../queries/chain.queries";
 import { getAllMerchant } from "../queries/merchant.queries";
+import { toast } from "react-toastify";
 const statusHard = [
   {
     label: "Active",
@@ -100,10 +101,12 @@ export const Chain = () => {
 
   React.useEffect(() => {
     getAllChain().then((rs) => setList(rs));
-    getAllMerchant().then((rs) => {
-      const l = rs?.map((item) => item.merchantCode);
-      setMerchantCodes(l);
-    });
+    getAllMerchant()
+      .then((rs) => {
+        const l = rs?.map((item) => item.merchantCode);
+        setMerchantCodes(l);
+      })
+      .catch((err) => toast.error(err.response.data.error));
     // const fn = async () => {
     //   const rs = await getAllChain();
     //   setList(rs);
