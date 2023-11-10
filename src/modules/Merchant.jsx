@@ -18,7 +18,6 @@ const statusHard = [
   },
 ];
 export const Merchant = () => {
-  const [idDelete, setIdDelelet] = useState();
   const [list, setList] = React.useState();
   const [merchantCode, setMerchantCode] = useState("");
   const [name, setName] = useState("");
@@ -30,20 +29,26 @@ export const Merchant = () => {
   const [desc, setDesc] = useState("");
   const [status, setStatus] = useState();
   const [objEdit, setObjEdit] = useState();
-  console.log(objEdit?.description);
+  const [objDelete, setObjDelete] = useState();
+
   const handelEdit = async () => {
     if (!objEdit) {
       return alert("Please select item");
     }
-    const rs = await editMerchant(objEdit);
-    if (rs?.status === "Success") {
-      alert(rs?.message);
-    }
-    if (rs?.status === "Failed") {
-      alert("Edit Failed");
-    }
+    editMerchant(objEdit)
+      .then((rs) => {
+        if (rs) {
+          toast.success(rs.message);
+          getAllMerchant()
+            .then((rs) => setList(rs.data))
+            .catch((err) => toast.error(err.message));
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
   };
-  const handelAdd = async () => {
+  const handelAdd = () => {
     if (
       !merchantCode ||
       !name ||
@@ -69,32 +74,41 @@ export const Merchant = () => {
       description: desc,
       status: status,
     };
-    const rs = await addMerchant(obj);
-    if (rs?.status === "Success") {
-    }
-    if (rs?.status === "Failed") {
-      return alert(rs?.message);
-    }
+    addMerchant(obj)
+      .then((rs) => {
+        if (rs) {
+          toast.success(rs.message);
+          getAllMerchant()
+            .then((rs) => setList(rs.data))
+            .catch((err) => toast.error(err.message));
+        }
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
   };
   const handelDelelet = () => {
-    if (!idDelete) {
+    if (!objDelete) {
       alert("Please enter valid ID");
       return;
     }
-    deleteMerchant(idDelete).then((rs) => {
-      if (rs?.status === "Success") {
-        alert(`Delete merchant ${idDelete} successfull`);
-        // const newlist = await getAllMerchant();
-        // return setList(newlist);
-      }
-    });
+    deleteMerchant(objDelete)
+      .then((rs) => {
+        if (rs) {
+          toast.success(rs.message);
+          getAllMerchant()
+            .then((rs) => setList(rs.data))
+            .catch((err) => toast.error(err.message));
+        }
+      })
+      .catch((err) => toast.error(err.message));
   };
 
   React.useEffect(() => {
     getAllMerchant()
-      .then((rs) => setList(rs))
-      .catch((err) => toast.error(err.response.data.error));
-  });
+      .then((rs) => setList(rs.data))
+      .catch((err) => toast.error(err.message));
+  }, []);
   return (
     <div className="wrapper">
       <div className="list">
@@ -119,7 +133,7 @@ export const Merchant = () => {
                   key={key}
                   onClick={() => {
                     setObjEdit(item);
-                    setIdDelelet(item?.id);
+                    setObjDelete(item);
                   }}
                 >
                   <div className="a id">{item?.id}</div>
@@ -345,14 +359,7 @@ export const Merchant = () => {
         </div>
         <div className="action">
           <div className="form">
-            <input
-              type="text"
-              name=""
-              id=""
-              placeholder="Enter valid id"
-              defaultValue={idDelete}
-              onChange={(e) => setIdDelelet(e.target.value)}
-            />
+            <div>{objDelete?.id}</div>
           </div>
           <div className="btn" onClick={() => handelDelelet()}>
             Delete
