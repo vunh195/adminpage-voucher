@@ -6,6 +6,7 @@ import {
   editcategory,
   getAllCategory,
 } from "../queries/category.queries";
+import { toast } from "react-toastify";
 const statusHard = [
   {
     label: "Active",
@@ -30,27 +31,28 @@ export const Category = () => {
     if (!objEdit) {
       return alert("Please select item");
     }
-    const rs = await editcategory(objEdit);
-    if (rs?.status === "Success") {
-      // alert(rs?.message);
-      const newspaperSpinning = [
-        {
-          backgroundColor: "white",
-        },
-        {
-          backgroundColor: "rgb(221 215 209)",
-        },
-      ];
-      const newspaperTiming = {
-        duration: 500,
-      };
-      const ele = document.querySelector(`.wrapper .list #anim`);
-      ele.animate(newspaperSpinning, newspaperTiming);
-      const newlist = await getAllCategory();
-      return setList(newlist);
-    }
-    if (rs?.status === "Failed") {
-      alert("Edit Failed");
+    try {
+      const rs = await editcategory(objEdit);
+      if (rs) {
+        toast.success(rs.message);
+        const newspaperSpinning = [
+          {
+            backgroundColor: "white",
+          },
+          {
+            backgroundColor: "rgb(221 215 209)",
+          },
+        ];
+        const newspaperTiming = {
+          duration: 500,
+        };
+        const ele = document.querySelector(`.wrapper .list #anim`);
+        ele.animate(newspaperSpinning, newspaperTiming);
+        const newlist = await getAllCategory();
+        return setList(newlist.data);
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
   const handelAdd = async () => {
@@ -64,13 +66,17 @@ export const Category = () => {
       status: status,
       bannerUrl: bannerUrl,
     };
-    const rs = await addcategory(obj);
-    if (rs?.status === "Success") {
-      const newlist = await getAllCategory();
-      return setList(newlist);
-    }
-    if (rs?.status === "Failed") {
-      return alert(rs?.message);
+    try {
+      const rs = await addcategory(obj);
+      if (rs?.status === "Success") {
+        const newlist = await getAllCategory();
+        return setList(newlist.data);
+      }
+      if (rs?.status === "Failed") {
+        return alert(rs?.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
   const handelDelelet = async () => {
@@ -78,23 +84,24 @@ export const Category = () => {
       alert("Please enter valid ID");
       return;
     }
-    const rs = await deletecategory(idDelete, objDelete);
-    if (rs?.status === "Success") {
-      alert(`Delete merchant ${idDelete} successfull`);
-      const newlist = await getAllCategory();
-      return setList(newlist);
-    } else {
-      alert(rs?.message);
+    try {
+      const rs = await deletecategory(idDelete, objDelete);
+      if (rs) {
+        toast.success(rs.message);
+        const newlist = await getAllCategory();
+        return setList(newlist.data);
+      } else {
+        alert(rs?.message);
+      }
+    } catch (err) {
+      toast.error(err.message);
     }
   };
 
   React.useEffect(() => {
-    getAllCategory().then((rs) => setList(rs));
-    // const fn = async () => {
-    //   const rs = await getAllChain();
-    //   setList(rs);
-    // };
-    // fn();
+    getAllCategory()
+      .then((rs) => setList(rs.data))
+      .catch((err) => toast.error(err.message));
   }, []);
   return (
     <div className="wrapper">
