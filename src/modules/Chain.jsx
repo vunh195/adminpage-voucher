@@ -38,27 +38,28 @@ export const Chain = () => {
     if (!objEdit) {
       return alert("Please select item");
     }
-    const rs = await editChain(objEdit);
-    if (rs?.status === "SUCCESS") {
-      // alert(rs?.message);
-      const newspaperSpinning = [
-        {
-          backgroundColor: "white",
-        },
-        {
-          backgroundColor: "rgb(221 215 209)",
-        },
-      ];
-      const newspaperTiming = {
-        duration: 500,
-      };
-      const ele = document.querySelector(`.wrapper .list #anim`);
-      ele.animate(newspaperSpinning, newspaperTiming);
-      const newlist = await getAllChain();
-      return setList(newlist);
-    }
-    if (rs?.status === "Failed") {
-      alert("Edit Failed");
+    try {
+      const rs = await editChain(objEdit);
+      if (rs) {
+        toast.success(rs.message);
+        const newspaperSpinning = [
+          {
+            backgroundColor: "white",
+          },
+          {
+            backgroundColor: "rgb(221 215 209)",
+          },
+        ];
+        const newspaperTiming = {
+          duration: 500,
+        };
+        const ele = document.querySelector(`.wrapper .list #anim`);
+        ele.animate(newspaperSpinning, newspaperTiming);
+        const newlist = await getAllChain();
+        return setList(newlist.data);
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
   const handelAdd = async () => {
@@ -77,13 +78,15 @@ export const Chain = () => {
       merchantCode: merchantCode,
       phone: phone,
     };
-    const rs = await addChain(obj);
-    if (rs?.status === "Success") {
-      const newlist = await getAllChain();
-      return setList(newlist);
-    }
-    if (rs?.status === "Failed") {
-      return alert(rs?.message);
+    try {
+      const rs = await addChain(obj);
+      if (rs) {
+        toast.success(rs.message);
+        const newlist = await getAllChain();
+        return setList(newlist.data);
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
   const handelDelelet = async () => {
@@ -91,27 +94,28 @@ export const Chain = () => {
       alert("Please enter valid ID");
       return;
     }
-    const rs = await deleteChain(idDelete, objDelete);
-    if (rs?.status === "Success") {
-      alert(`Delete  ${idDelete} successfull`);
-      const newlist = await getAllChain();
-      return setList(newlist);
+    try {
+      const rs = await deleteChain(idDelete, objDelete);
+      if (rs) {
+        toast.success(rs.message);
+        const newlist = await getAllChain();
+        return setList(newlist.data);
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
   React.useEffect(() => {
-    getAllChain().then((rs) => setList(rs));
+    getAllChain()
+      .then((rs) => setList(rs.data))
+      .catch((err) => toast.error(err.message));
     getAllMerchant()
       .then((rs) => {
-        const l = rs?.map((item) => item.merchantCode);
+        const l = rs?.data.map((item) => item.merchantCode);
         setMerchantCodes(l);
       })
-      .catch((err) => toast.error(err.response.data.error));
-    // const fn = async () => {
-    //   const rs = await getAllChain();
-    //   setList(rs);
-    // };
-    // fn();
+      .catch((err) => toast.error(err.message));
   }, []);
   React.useEffect(() => {
     merchantCodes && setMerchantCode(merchantCodes[0]);
