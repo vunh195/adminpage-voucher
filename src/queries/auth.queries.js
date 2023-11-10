@@ -1,8 +1,14 @@
 import http from "../configs/http";
 
 export const signIn = async (payload) => {
-  const rs = await http.post("/account/api/signin", null, {
+  return http.post("/account/api/signin", null, {
     params: payload,
   });
-  return rs;
+};
+export const signOut = async (refreshToken) => {
+  return http.post("/account/api/logout", null, {
+    headers: {
+      Authorization: "Bearer " + refreshToken,
+    },
+  });
 };

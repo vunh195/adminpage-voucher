@@ -11,11 +11,16 @@ import {
   Warehouse,
 } from "./modules";
 import { schemaSignIn } from "./validate";
-import { signIn } from "./queries/auth.queries";
+import { signIn, signOut } from "./queries/auth.queries";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { logIn, logOut, selectAccessToken } from "./redux/features/authSlice";
+import {
+  logIn,
+  logOut,
+  selectAccessToken,
+  selectRefreshToken,
+} from "./redux/features/authSlice";
 import { yupResolver } from "@hookform/resolvers/yup";
 const list = [
   "Merchant",
@@ -37,6 +42,8 @@ function App() {
   });
   const dispatch = useDispatch();
   const token = useSelector(selectAccessToken);
+  const refreshToken = useSelector(selectRefreshToken);
+
   const onSubmitSignIn = async (data) => {
     signIn(data)
       .then((rs) => {
@@ -72,7 +79,19 @@ function App() {
           );
         })}
         {token ? (
-          <div className="logout" onClick={() => dispatch(logOut())}>
+          <div
+            className="logout"
+            onClick={() => {
+              dispatch(logOut());
+              signOut(refreshToken)
+                .then((rs) => {
+                  if (rs) {
+                    toast.success(rs.message);
+                  }
+                })
+                .catch((err) => toast.error(err.response.data.message));
+            }}
+          >
             Logout
           </div>
         ) : (

@@ -29,5 +29,6 @@ export const { logOut, logIn } = authSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectAccessToken = (state) => state.auth.accessToken;
+export const selectRefreshToken = (state) => state.auth.refreshToken;
 
 export default authSlice.reducer;
